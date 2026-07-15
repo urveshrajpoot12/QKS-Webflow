@@ -15,12 +15,17 @@ async function loadBlogs() {
     grid.innerHTML = "";
 
     data.body.forEach((blog) => {
-
+console.log(blog.cardImageDetailsDto);
       const image =
         blog.cardImageDetailsDto?.large ||
         blog.cardImageDetailsDto?.medium ||
         blog.cardImageDetailsDto?.thumbnail ||
         "";
+        <img
+    src="${image}"
+    alt="${blog.blogTitle}"
+    onerror="this.style.display='none'"
+></img>
 
       const date = new Date(blog.postDate);
 
