@@ -1,115 +1,44 @@
-console.log("BLOGS JS VERSION 2");
+grid.innerHTML += `
+<div class="blog-card">
 
-const API_URL = "https://backend.qksgroup.com/get-blogs?page=0&size=9";
+    <div class="blog-card-image">
 
-async function loadBlogs() {
-    try {
+        <img
+            src="${image}"
+            alt="${blog.blogTitle}"
+            loading="lazy"
+            onerror="this.onerror=null;this.src='https://placehold.co/800x500?text=No+Image';"
+        >
 
-        const response = await fetch(API_URL);
-        const data = await response.json();
+        <div class="blog-overlay"></div>
 
-        console.log("API Response:", data);
+        <div class="blog-top">
 
-        const grid = document.getElementById("blogs-grid");
+            <span class="blog-badge">Blog</span>
 
-        if (!grid) {
-            console.error("blogs-grid element not found");
-            return;
-        }
+            <span class="blog-date">${formattedDate}</span>
 
-        grid.innerHTML = "";
+        </div>
 
-        data.body.forEach((blog) => {
+        <div class="blog-info">
 
-            console.log(blog.cardImageDetailsDto);
+            <h3>${blog.blogTitle}</h3>
 
-            const image =
-                blog.cardImageDetailsDto?.thumbnail ||
-                blog.cardImageDetailsDto?.medium ||
-                blog.cardImageDetailsDto?.small ||
-                "";
+            <p>${synopsis}</p>
 
-            console.log("Image URL:", image);
+            <div class="blog-bottom">
 
-            const date = new Date(blog.postDate);
+                <span class="author">${author}</span>
 
-            const formattedDate = date.toLocaleDateString("en-GB");
+                <a href="${blogUrl}" target="_blank">
+                    Read More →
+                </a>
 
-            const synopsis = blog.synopsis
-                ? blog.synopsis
-                : "Click Read More to explore the complete article.";
+            </div>
 
-            const author = blog.postAuthor || "QKS Group";
+        </div>
 
-            const blogUrl =
-    blog.blogUrl
-        ? "https://qksgroup.com" + blog.blogUrl
-        : "#";
+    </div>
 
-            grid.innerHTML += `
-                <div class="blog-card">
-
-                    <div class="blog-card-image">
-
-                        <img
-                            src="${image}"
-                            alt="${blog.blogTitle}"
-                            loading="lazy"
-                            onerror="this.onerror=null;this.src='https://placehold.co/600x400?text=No+Image';"
-                        >
-
-                        <div class="blog-overlay"></div>
-
-                        <div class="blog-top">
-
-                            <span class="blog-badge">Blog</span>
-
-                            <span class="blog-date">${formattedDate}</span>
-
-                        </div>
-
-                    </div>
-
-                    <div class="blog-content">
-
-                        <h3 class="blog-title">
-                            ${blog.blogTitle.length>70
-?blog.blogTitle.substring(0,70)+"..."
-:blog.blogTitle}
-                        </h3>
-
-                        <p class="blog-description">
-                           ${synopsis.substring(0,130)}...
-                        </p>
-
-                        <div class="blog-footer">
-
-                            <div class="author">
-                                ${author}
-                            </div>
-
-                            <a
-                                class="read-more"
-                                href="${blogUrl}"
-                                target="_blank"
-                            >
-                                Read More →
-                            </a>
-
-                        </div>
-
-                    </div>
-
-                </div>
-            `;
-
-        });
-
-    } catch (error) {
-
-        console.error("Blog Loading Error:", error);
-
-    }
-}
-
-document.addEventListener("DOMContentLoaded", loadBlogs);
+</div>
+`;
