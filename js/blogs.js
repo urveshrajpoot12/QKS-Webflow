@@ -42,10 +42,9 @@ async function loadBlogs() {
             const author = blog.postAuthor || "QKS Group";
 
             const blogUrl =
-                blog.blogUrl ||
-                blog.slug ||
-                blog.url ||
-                "#";
+    blog.blogUrl
+        ? "https://qksgroup.com" + blog.blogUrl
+        : "#";
 
             grid.innerHTML += `
                 <div class="blog-card">
@@ -74,11 +73,13 @@ async function loadBlogs() {
                     <div class="blog-content">
 
                         <h3 class="blog-title">
-                            ${blog.blogTitle}
+                            ${blog.blogTitle.length>70
+?blog.blogTitle.substring(0,70)+"..."
+:blog.blogTitle}
                         </h3>
 
                         <p class="blog-description">
-                            ${synopsis}
+                           ${synopsis.substring(0,130)}...
                         </p>
 
                         <div class="blog-footer">
