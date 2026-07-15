@@ -47,61 +47,67 @@ async function loadBlogs() {
         : "#";
 
             grid.innerHTML += `
-                <div class="blog-card">
+<div class="blog-card">
 
-                    <div class="blog-card-image">
+    <div class="blog-card-image">
 
-                        <img
-                            src="${image}"
-                            alt="${blog.blogTitle}"
-                            loading="lazy"
-                            onerror="this.onerror=null;this.src='https://placehold.co/600x400?text=No+Image';"
-                        >
+        <img
+            src="${image}"
+            alt="${blog.blogTitle}"
+            loading="lazy"
+            onerror="this.onerror=null;this.src='https://placehold.co/800x500?text=No+Image';"
+        >
 
-                        <div class="blog-overlay"></div>
+        <div class="blog-overlay"></div>
 
-                        <div class="blog-top">
+        <div class="blog-top">
 
-                            <span class="blog-badge">Blog</span>
+            <span class="blog-badge">Blog</span>
 
-                            <span class="blog-date">${formattedDate}</span>
+            <span class="blog-date">${formattedDate}</span>
 
-                        </div>
+        </div>
 
-                    </div>
+        <div class="blog-info">
 
-                    <div class="blog-content">
+            <h3>
+                ${
+                    blog.blogTitle.length > 80
+                    ? blog.blogTitle.substring(0,80) + "..."
+                    : blog.blogTitle
+                }
+            </h3>
 
-                        <h3 class="blog-title">
-                            ${blog.blogTitle.length>70
-?blog.blogTitle.substring(0,70)+"..."
-:blog.blogTitle}
-                        </h3>
+            <p>
+                ${
+                    synopsis.length > 140
+                    ? synopsis.substring(0,140) + "..."
+                    : synopsis
+                }
+            </p>
 
-                        <p class="blog-description">
-                           ${synopsis.substring(0,130)}...
-                        </p>
+            <div class="blog-bottom">
 
-                        <div class="blog-footer">
+                <span class="author">
+                    ${author}
+                </span>
 
-                            <div class="author">
-                                ${author}
-                            </div>
+                <a
+                    href="${blogUrl}"
+                    target="_blank"
+                    rel="noopener"
+                >
+                    Read More →
+                </a>
 
-                            <a
-                                class="read-more"
-                                href="${blogUrl}"
-                                target="_blank"
-                            >
-                                Read More →
-                            </a>
+            </div>
 
-                        </div>
+        </div>
 
-                    </div>
+    </div>
 
-                </div>
-            `;
+</div>
+`;
 
         });
 
