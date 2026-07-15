@@ -17,10 +17,10 @@ async function loadBlogs() {
     data.body.forEach((blog) => {
 console.log(blog.cardImageDetailsDto);
       const image =
-        blog.cardImageDetailsDto?.large ||
-        blog.cardImageDetailsDto?.medium ||
-        blog.cardImageDetailsDto?.thumbnail ||
-        "";
+blog.cardImageDetailsDto?.thumbnail ||
+blog.cardImageDetailsDto?.medium ||
+blog.cardImageDetailsDto?.small ||
+"";
         <img
     src="${image}"
     alt="${blog.blogTitle}"
