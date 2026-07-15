@@ -1,44 +1,115 @@
-grid.innerHTML += `
-<div class="blog-card">
+console.log("BLOGS JS VERSION 2");
 
-    <div class="blog-card-image">
+const API_URL = "https://backend.qksgroup.com/get-blogs?page=0&size=9";
 
-        <img
-            src="${image}"
-            alt="${blog.blogTitle}"
-            loading="lazy"
-            onerror="this.onerror=null;this.src='https://placehold.co/800x500?text=No+Image';"
-        >
+async function loadBlogs() {
+    try {
 
-        <div class="blog-overlay"></div>
+        const response = await fetch(API_URL);
+        const data = await response.json();
 
-        <div class="blog-top">
+        console.log("API Response:", data);
 
-            <span class="blog-badge">Blog</span>
+        const grid = document.getElementById("blogs-grid");
 
-            <span class="blog-date">${formattedDate}</span>
+        if (!grid) {
+            console.error("blogs-grid element not found");
+            return;
+        }
 
-        </div>
+        grid.innerHTML = "";
 
-        <div class="blog-info">
+        data.body.forEach((blog) => {
 
-            <h3>${blog.blogTitle}</h3>
+            console.log(blog.cardImageDetailsDto);
 
-            <p>${synopsis}</p>
+            const image =
+                blog.cardImageDetailsDto?.thumbnail ||
+                blog.cardImageDetailsDto?.medium ||
+                blog.cardImageDetailsDto?.small ||
+                "";
 
-            <div class="blog-bottom">
+            console.log("Image URL:", image);
 
-                <span class="author">${author}</span>
+            const date = new Date(blog.postDate);
 
-                <a href="${blogUrl}" target="_blank">
-                    Read More →
-                </a>
+            const formattedDate = date.toLocaleDateString("en-GB");
 
-            </div>
+            const synopsis = blog.synopsis
+                ? blog.synopsis
+                : "Click Read More to explore the complete article.";
 
-        </div>
+            const author = blog.postAuthor || "QKS Group";
 
-    </div>
+            const blogUrl =
+    blog.blogUrl
+        ? "https://qksgroup.com" + blog.blogUrl
+        : "#";
 
-</div>
-`;
+            grid.innerHTML += `
+                <div class="blog-card">
+
+                    <div class="blog-card-image">
+
+                        <img
+                            src="${image}"
+                            alt="${blog.blogTitle}"
+                            loading="lazy"
+                            onerror="this.onerror=null;this.src='https://placehold.co/600x400?text=No+Image';"
+                        >
+
+                        <div class="blog-overlay"></div>
+
+                        <div class="blog-top">
+
+                            <span class="blog-badge">Blog</span>
+
+                            <span class="blog-date">${formattedDate}</span>
+
+                        </div>
+
+                    </div>
+
+                    <div class="blog-content">
+
+                        <h3 class="blog-title">
+                            ${blog.blogTitle.length>70
+?blog.blogTitle.substring(0,70)+"..."
+:blog.blogTitle}
+                        </h3>
+
+                        <p class="blog-description">
+                           ${synopsis.substring(0,130)}...
+                        </p>
+
+                        <div class="blog-footer">
+
+                            <div class="author">
+                                ${author}
+                            </div>
+
+                            <a
+                                class="read-more"
+                                href="${blogUrl}"
+                                target="_blank"
+                            >
+                                Read More →
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+            `;
+
+        });
+
+    } catch (error) {
+
+        console.error("Blog Loading Error:", error);
+
+    }
+}
+
+document.addEventListener("DOMContentLoaded", loadBlogs);
