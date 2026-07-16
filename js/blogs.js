@@ -28,6 +28,18 @@ let currentKeyword = "";
         }
 
         grid.innerHTML = "";
+        let cards = [];
+        if (data.body.length === 0) {
+
+    grid.innerHTML = `
+        <div class="no-blog">
+            No Blogs Found
+        </div>
+    `;
+
+    return;
+
+}
 
         data.body.forEach((blog) => {
 
@@ -62,6 +74,7 @@ let currentKeyword = "";
 const blogUrl = `/blog-details?slug=${slug}`;
 
             grid.innerHTML += `
+            
 <div class="blog-card">
 
     <div class="blog-card-image">
