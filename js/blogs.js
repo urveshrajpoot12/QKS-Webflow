@@ -70,6 +70,7 @@ async function loadBlogs(
         const data = await response.json();
 
         console.log("API Response",data);
+        console.log("First Blog:", data.body[0]);
 
         allBlogs = data.body || [];
 
