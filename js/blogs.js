@@ -1,200 +1,523 @@
-console.log("BLOGS JS VERSION 2");
+console.log("BLOGS JS PRODUCTION V3");
 
-// const API_URL = "https://backend.qksgroup.com/get-blogs?page=0&size=9";
-const API_BASE =
-"https://backend.qksgroup.com/get-blogs";
+/* ==============================
+   CONFIG
+============================== */
+
+const API_BASE = "https://backend.qksgroup.com/get-blogs";
 
 let currentPage = 0;
 const pageSize = 9;
-let currentKeyword = "";
 
-// async function loadBlogs() {
-    async function loadBlogs(page = 0, keyword = "") {
+let currentKeyword = "";
+let currentStartDate = "";
+let currentEndDate = "";
+
+let allBlogs = [];
+let totalPages = 0;
+
+
+/* ==============================
+   LOAD BLOGS
+============================== */
+
+async function loadBlogs(
+    page = 0,
+    keyword = "",
+    startDate = "",
+    endDate = ""
+) {
+
+    const grid = document.getElementById("blogs-grid");
+
+    if (!grid) {
+
+        console.error("blogs-grid not found");
+
+        return;
+
+    }
+
+    showLoader();
+
     try {
 
-        // const response = await fetch(API_URL);
-        const response = await fetch(
-`${API_BASE}?page=${page}&size=${pageSize}&keyword=${encodeURIComponent(keyword)}`
-);
-        const data = await response.json();
+        let url =
+`${API_BASE}?page=${page}&size=${pageSize}`;
 
-        console.log("API Response:", data);
+        if(keyword){
 
-        const grid = document.getElementById("blogs-grid");
+            url += `&keyword=${encodeURIComponent(keyword)}`;
 
-        if (!grid) {
-            console.error("blogs-grid element not found");
-            return;
         }
 
-        grid.innerHTML = "";
-        let cards = [];
-        if (data.body.length === 0) {
+        if(startDate){
 
-    grid.innerHTML = `
-        <div class="no-blog">
-            No Blogs Found
-        </div>
-    `;
+            url += `&startDate=${startDate}`;
 
-    return;
+        }
+
+        if(endDate){
+
+            url += `&endDate=${endDate}`;
+
+        }
+
+        console.log(url);
+
+        const response = await fetch(url);
+
+        const data = await response.json();
+
+        console.log("API Response",data);
+
+        allBlogs = data.body || [];
+
+        totalPages = data.totalPages || 1;
+
+        renderCards(allBlogs);
+
+        renderPagination();
+
+    }
+
+    catch(error){
+
+        console.error(error);
+
+        showError();
+
+    }
 
 }
+/* ==============================
+   RENDER BLOGS
+============================== */
 
-        data.body.forEach((blog) => {
+function renderCards(blogs){
 
-            console.log(blog.cardImageDetailsDto);
+    const grid =
+    document.getElementById("blogs-grid");
 
-            const image =
-                blog.cardImageDetailsDto?.thumbnail ||
-                blog.cardImageDetailsDto?.medium ||
-                blog.cardImageDetailsDto?.small ||
-                "";
+    grid.innerHTML = "";
 
-            console.log("Image URL:", image);
+    if(!blogs.length){
 
-            const date = new Date(blog.postDate);
+        showNoResult();
 
-            const formattedDate = date.toLocaleDateString("en-GB");
+        return;
 
-            const synopsis = blog.synopsis
-                ? blog.synopsis
-                : "Click Read More to explore the complete article.";
+    }
 
-            const author = blog.postAuthor || "QKS Group";
+    let html = "";
 
-    //         const blogUrl =
-    // blog.blogUrl
-    //     ? "https://qksgroup.com" + blog.blogUrl
-    //     : "#";
-    const slug = blog.blogUrl
-    ? blog.blogUrl.split("/").pop()
-    : "";
+    blogs.forEach((blog)=>{
 
-const blogUrl = `/blog-details?slug=${slug}`;
+        const image =
 
-            grid.innerHTML += `
-            
-            const cards = document.querySelectorAll(".blog-card");
+        blog.cardImageDetailsDto?.thumbnail ||
 
-cards.forEach((card, index) => {
+        blog.cardImageDetailsDto?.medium ||
 
-    console.log("Card", index);
+        blog.cardImageDetailsDto?.small ||
 
-    console.log(card);
+        "";
 
-    console.log("Height:", card.offsetHeight);
+        const date =
 
-    console.log("Image:", card.querySelector(".blog-card-image")?.offsetHeight);
+        new Date(blog.postDate);
 
-    console.log("Info:", card.querySelector(".blog-info")?.offsetHeight);
+        const formattedDate =
 
-});
+        date.toLocaleDateString("en-GB");
+
+        const synopsis =
+
+        blog.synopsis ||
+
+        "Click Read More to explore the complete article.";
+
+        const author =
+
+        blog.postAuthor ||
+
+        "QKS Group";
+
+        const slug =
+
+        blog.blogUrl
+
+        ? blog.blogUrl.split("/").pop()
+
+        : "";
+
+        const blogUrl =
+
+        `/blog-details?slug=${slug}`;
+
+        html += `
 
 <div class="blog-card">
 
-    <div class="blog-card-image">
+<div class="blog-card-image">
 
-        <img
-            src="${image}"
-            alt="${blog.blogTitle}"
-            loading="lazy"
-            onerror="this.onerror=null;this.src='https://placehold.co/800x500?text=No+Image';"
-        >
+<img
 
-        <div class="blog-overlay"></div>
+src="${image}"
 
-        <div class="blog-top">
+alt="${blog.blogTitle}"
 
-            <span class="blog-badge">Blog</span>
+loading="lazy"
 
-            <span class="blog-date">${formattedDate}</span>
+onerror="this.onerror=null;this.src='https://placehold.co/800x500?text=No+Image';"
 
-        </div>
+>
 
-        <div class="blog-info">
+<div class="blog-overlay"></div>
 
-            <h3>
-                ${
-                    blog.blogTitle.length > 80
-                    ? blog.blogTitle.substring(0,80) + "..."
-                    : blog.blogTitle
-                }
-            </h3>
+<div class="blog-top">
 
-            <p>
-                ${
-                    synopsis.length > 140
-                    ? synopsis.substring(0,140) + "..."
-                    : synopsis
-                }
-            </p>
+<span class="blog-badge">
 
-            <div class="blog-bottom">
+Blog
 
-                <span class="author">
-                    ${author}
-                </span>
+</span>
 
-                <a
-                    href="${blogUrl}"
-                    target="_blank"
-                    rel="noopener"
-                >
-                    Read More →
-                </a>
+<span class="blog-date">
 
-            </div>
+${formattedDate}
 
-        </div>
-
-    </div>
+</span>
 
 </div>
+
+<div class="blog-info">
+
+<h3>
+
+${
+
+blog.blogTitle.length>80
+
+?
+
+blog.blogTitle.substring(0,80)+"..."
+
+:
+
+blog.blogTitle
+
+}
+
+</h3>
+
+<p>
+
+${
+
+synopsis.length>140
+
+?
+
+synopsis.substring(0,140)+"..."
+
+:
+
+synopsis
+
+}
+
+</p>
+
+<div class="blog-bottom">
+
+<span class="author">
+
+${author}
+
+</span>
+
+<a
+
+href="${blogUrl}"
+
+>
+
+Read More →
+
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
 `;
+
+    });
+
+    grid.innerHTML = html;
+
+}
+/* ==============================
+   LOADER
+============================== */
+
+function showLoader(){
+
+const grid=document.getElementById("blogs-grid");
+
+grid.innerHTML=`
+
+<div class="loading-wrapper">
+
+Loading Blogs...
+
+</div>
+
+`;
+
+}
+
+/* ==============================
+   NO RESULT
+============================== */
+
+function showNoResult(){
+
+const grid=document.getElementById("blogs-grid");
+
+grid.innerHTML=`
+
+<div class="no-blog">
+
+No Blogs Found
+
+</div>
+
+`;
+
+}
+
+/* ==============================
+   ERROR
+============================== */
+
+function showError(){
+
+const grid=document.getElementById("blogs-grid");
+
+grid.innerHTML=`
+
+<div class="no-blog">
+
+Unable to load blogs.
+
+</div>
+
+`;
+
+}
+/* ==========================================
+   PAGINATION
+========================================== */
+
+function renderPagination() {
+
+    const pagination =
+        document.getElementById("pagination");
+
+    if (!pagination) return;
+
+    pagination.innerHTML = "";
+
+    if (totalPages <= 1) return;
+
+    let html = "";
+
+    html += `
+        <button
+            class="page-btn"
+            ${currentPage === 0 ? "disabled" : ""}
+            data-page="${currentPage - 1}"
+        >
+            ← Previous
+        </button>
+    `;
+
+    for (let i = 0; i < totalPages; i++) {
+
+        html += `
+            <button
+                class="page-btn ${i === currentPage ? "active" : ""}"
+                data-page="${i}"
+            >
+                ${i + 1}
+            </button>
+        `;
+
+    }
+
+    html += `
+        <button
+            class="page-btn"
+            ${currentPage === totalPages - 1 ? "disabled" : ""}
+            data-page="${currentPage + 1}"
+        >
+            Next →
+        </button>
+    `;
+
+    pagination.innerHTML = html;
+
+    pagination
+        .querySelectorAll(".page-btn")
+        .forEach((button) => {
+
+            button.addEventListener("click", () => {
+
+                if (button.disabled) return;
+
+                currentPage =
+                    Number(button.dataset.page);
+
+                loadBlogs(
+                    currentPage,
+                    currentKeyword,
+                    currentStartDate,
+                    currentEndDate
+                );
+
+                window.scrollTo({
+                    top: 0,
+                    behavior: "smooth"
+                });
+
+            });
 
         });
 
-    } catch (error) {
+}
 
-        console.error("Blog Loading Error:", error);
+/* ==========================================
+   SEARCH
+========================================== */
+
+function initSearch() {
+
+    const searchInput =
+        document.getElementById("search-input");
+
+    const searchButton =
+        document.getElementById("search-button");
+
+    if (!searchInput || !searchButton) {
+
+        console.warn("Search elements not found");
+
+        return;
 
     }
+
+    searchButton.addEventListener("click", () => {
+
+        currentKeyword =
+            searchInput.value.trim();
+
+        currentPage = 0;
+
+        loadBlogs(
+            currentPage,
+            currentKeyword,
+            currentStartDate,
+            currentEndDate
+        );
+
+    });
+
+    searchInput.addEventListener("keypress", (e) => {
+
+        if (e.key !== "Enter") return;
+
+        currentKeyword =
+            searchInput.value.trim();
+
+        currentPage = 0;
+
+        loadBlogs(
+            currentPage,
+            currentKeyword,
+            currentStartDate,
+            currentEndDate
+        );
+
+    });
+
 }
 
-// document.addEventListener("DOMContentLoaded", loadBlogs);
-document.addEventListener("DOMContentLoaded",()=>{
+/* ==========================================
+   DATE FILTER
+========================================== */
 
-loadBlogs(currentPage,currentKeyword);
+function initDateFilter() {
 
-});
+    const start =
+        document.getElementById("start-date");
 
-document
-.getElementById("search-btn")
-.addEventListener("click",()=>{
+    const end =
+        document.getElementById("end-date");
 
-currentKeyword=
-document
-.getElementById("search-input")
-.value;
+    if (!start || !end) {
 
-currentPage=0;
+        console.warn("Date filter not found");
 
-loadBlogs(currentPage,currentKeyword);
+        return;
 
-});
-document
-.getElementById("search-input")
-.addEventListener("keypress",(e)=>{
+    }
 
-if(e.key==="Enter"){
+    start.addEventListener("change", () => {
 
-currentKeyword=e.target.value;
+        currentStartDate = start.value;
 
-currentPage=0;
+        loadBlogs(
+            0,
+            currentKeyword,
+            currentStartDate,
+            currentEndDate
+        );
 
-loadBlogs(currentPage,currentKeyword);
+    });
+
+    end.addEventListener("change", () => {
+
+        currentEndDate = end.value;
+
+        loadBlogs(
+            0,
+            currentKeyword,
+            currentStartDate,
+            currentEndDate
+        );
+
+    });
 
 }
+
+/* ==========================================
+   DOM READY
+========================================== */
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    console.log("Blogs Page Ready");
+
+    initSearch();
+
+    initDateFilter();
+
+    loadBlogs();
 
 });
