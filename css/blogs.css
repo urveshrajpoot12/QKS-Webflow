@@ -327,3 +327,42 @@ font-size:28px;
 .search-button{
     border-radius:50px;
 }
+.blog-info{
+    position:absolute !important;
+    left:30px !important;
+    right:30px !important;
+    bottom:30px !important;
+    z-index:999 !important;
+    display:block !important;
+    visibility:visible !important;
+    opacity:1 !important;
+    color:#fff !important;
+}
+
+.blog-info h3{
+    color:#fff !important;
+    display:block !important;
+}
+
+.blog-info p{
+    color:#fff !important;
+    display:block !important;
+}
+
+.blog-overlay{
+    z-index:1 !important;
+}
+
+.blog-top{
+    z-index:5 !important;
+}
+
+.blog-info{
+    z-index:10 !important;
+}
+
+.blog-card-image img{
+    z-index:0 !important;
+    position:absolute;
+    inset:0;
+}
