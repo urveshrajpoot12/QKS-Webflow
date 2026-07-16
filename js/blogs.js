@@ -1,3 +1,4 @@
+let totalPages = 0;
 console.log("BLOGS JS PRODUCTION V3");
 
 /* ==============================
@@ -5,6 +6,10 @@ console.log("BLOGS JS PRODUCTION V3");
 ============================== */
 
 const API_BASE = "https://backend.qksgroup.com/get-blogs";
+const data = await response.json();
+totalPages = data.totalPages || 1;
+
+console.log("Total Pages :", totalPages);
 
 let currentPage = 0;
 const pageSize = 9;
@@ -89,6 +94,26 @@ async function loadBlogs(
         showError();
 
     }
+
+}
+renderPagination();
+function changePage(page){
+
+if(page<0) return;
+
+if(page>=totalPages) return;
+
+currentPage=page;
+
+loadBlogs(currentPage,currentKeyword);
+
+window.scrollTo({
+
+top:0,
+
+behavior:"smooth"
+
+});
 
 }
 /* ==============================
@@ -261,6 +286,76 @@ Read More →
     });
 
     grid.innerHTML = html;
+
+}
+function renderPagination(){
+
+const pagination=document.getElementById("pagination");
+
+if(!pagination) return;
+
+pagination.innerHTML="";
+
+
+// Previous
+
+pagination.innerHTML+=`
+
+<button
+
+class="page-btn ${currentPage===0?"disabled":""}"
+
+onclick="changePage(${currentPage-1})"
+
+>
+
+‹
+
+</button>
+
+`;
+
+
+// Numbers
+
+for(let i=0;i<totalPages;i++){
+
+pagination.innerHTML+=`
+
+<button
+
+class="page-btn ${i===currentPage?"active":""}"
+
+onclick="changePage(${i})"
+
+>
+
+${i+1}
+
+</button>
+
+`;
+
+}
+
+
+// Next
+
+pagination.innerHTML+=`
+
+<button
+
+class="page-btn ${currentPage===totalPages-1?"disabled":""}"
+
+onclick="changePage(${currentPage+1})"
+
+>
+
+›
+
+</button>
+
+`;
 
 }
 /* ==============================
@@ -522,3 +617,4 @@ document.addEventListener("DOMContentLoaded", () => {
     loadBlogs();
 
 });
+window.changePage=changePage;
