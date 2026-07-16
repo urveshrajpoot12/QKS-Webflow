@@ -75,6 +75,22 @@ const blogUrl = `/blog-details?slug=${slug}`;
 
             grid.innerHTML += `
             
+            const cards = document.querySelectorAll(".blog-card");
+
+cards.forEach((card, index) => {
+
+    console.log("Card", index);
+
+    console.log(card);
+
+    console.log("Height:", card.offsetHeight);
+
+    console.log("Image:", card.querySelector(".blog-card-image")?.offsetHeight);
+
+    console.log("Info:", card.querySelector(".blog-info")?.offsetHeight);
+
+});
+
 <div class="blog-card">
 
     <div class="blog-card-image">
