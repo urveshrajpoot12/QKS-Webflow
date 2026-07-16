@@ -382,3 +382,58 @@ font-size:28px;
     position:absolute;
     inset:0;
 }
+.blog-card{
+
+    overflow: visible !important;
+
+}
+
+
+
+.blog-info{
+
+    position: absolute !important;
+
+    left: 20px !important;
+
+    right: 20px !important;
+
+    bottom: 20px !important;
+
+    z-index: 99999 !important;
+
+    display: block !important;
+
+    visibility: visible !important;
+
+    opacity: 1 !important;
+
+    color: #ffffff !important;
+
+    background: rgba(255,0,0,0.7) !important;
+
+}
+
+
+
+.blog-info h3{
+
+    display:block !important;
+
+    color:#fff !important;
+
+    font-size:28px !important;
+
+}
+
+
+
+.blog-info p{
+
+    display:block !important;
+
+    color:#fff !important;
+
+    font-size:16px !important;
+
+}
