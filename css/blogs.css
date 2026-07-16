@@ -275,3 +275,55 @@ font-size:28px;
 }
 
 }
+.blog-hero{
+    padding:120px 0 80px;
+    background:linear-gradient(135deg,#0B2D5C,#1F5EA8);
+    color:#fff;
+}
+
+.container-large{
+    max-width:1280px;
+    margin:auto;
+    padding:0 20px;
+}
+
+.hero-content{
+    max-width:800px;
+}
+
+.hero-subtitle{
+    color:#61C3FF;
+    font-size:16px;
+    font-weight:600;
+    text-transform:uppercase;
+    letter-spacing:1px;
+    margin-bottom:20px;
+}
+
+.hero-title{
+    font-size:64px;
+    line-height:1.1;
+    font-weight:700;
+    margin-bottom:20px;
+}
+
+.hero-description{
+    font-size:20px;
+    line-height:1.8;
+    max-width:700px;
+    opacity:.9;
+}
+
+.hero-search{
+    margin-top:50px;
+}
+
+.search-input{
+    height:60px;
+    border-radius:50px;
+    padding:0 25px;
+}
+
+.search-button{
+    border-radius:50px;
+}

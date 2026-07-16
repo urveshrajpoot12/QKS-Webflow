@@ -1,11 +1,21 @@
 console.log("BLOGS JS VERSION 2");
 
-const API_URL = "https://backend.qksgroup.com/get-blogs?page=0&size=9";
+// const API_URL = "https://backend.qksgroup.com/get-blogs?page=0&size=9";
+const API_BASE =
+"https://backend.qksgroup.com/get-blogs";
 
-async function loadBlogs() {
+let currentPage = 0;
+const pageSize = 9;
+let currentKeyword = "";
+
+// async function loadBlogs() {
+    async function loadBlogs(page = 0, keyword = "") {
     try {
 
-        const response = await fetch(API_URL);
+        // const response = await fetch(API_URL);
+        const response = await fetch(
+`${API_BASE}?page=${page}&size=${pageSize}&keyword=${encodeURIComponent(keyword)}`
+);
         const data = await response.json();
 
         console.log("API Response:", data);
@@ -41,10 +51,15 @@ async function loadBlogs() {
 
             const author = blog.postAuthor || "QKS Group";
 
-            const blogUrl =
-    blog.blogUrl
-        ? "https://qksgroup.com" + blog.blogUrl
-        : "#";
+    //         const blogUrl =
+    // blog.blogUrl
+    //     ? "https://qksgroup.com" + blog.blogUrl
+    //     : "#";
+    const slug = blog.blogUrl
+    ? blog.blogUrl.split("/").pop()
+    : "";
+
+const blogUrl = `/blog-details?slug=${slug}`;
 
             grid.innerHTML += `
 <div class="blog-card">
@@ -118,4 +133,39 @@ async function loadBlogs() {
     }
 }
 
-document.addEventListener("DOMContentLoaded", loadBlogs);
+// document.addEventListener("DOMContentLoaded", loadBlogs);
+document.addEventListener("DOMContentLoaded",()=>{
+
+loadBlogs(currentPage,currentKeyword);
+
+});
+
+document
+.getElementById("search-btn")
+.addEventListener("click",()=>{
+
+currentKeyword=
+document
+.getElementById("search-input")
+.value;
+
+currentPage=0;
+
+loadBlogs(currentPage,currentKeyword);
+
+});
+document
+.getElementById("search-input")
+.addEventListener("keypress",(e)=>{
+
+if(e.key==="Enter"){
+
+currentKeyword=e.target.value;
+
+currentPage=0;
+
+loadBlogs(currentPage,currentKeyword);
+
+}
+
+});
