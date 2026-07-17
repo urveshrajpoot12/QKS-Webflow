@@ -1,29 +1,23 @@
-console.log("BLOG DETAILS PRODUCTION V2");
+console.log("BLOG DETAILS PRODUCTION V3");
+
+//======================================================
+// CONFIG
+//======================================================
 
 const API_BASE = "https://backend.qksgroup.com";
 
-// Get slug from URL
 const params = new URLSearchParams(window.location.search);
 
 const blogId = params.get("id");
 
 console.log("Blog ID :", blogId);
 
-// ===========================================
-// URL PARAMETERS
-// ===========================================
-
-const params = new URLSearchParams(window.location.search);
-
-const slug = params.get("slug");
-
-console.log("Slug :", slug);
-
 let currentBlog = null;
 
-// ===========================================
-// DOM ELEMENTS
-// ===========================================
+
+//======================================================
+// DOM
+//======================================================
 
 const titleEl = document.getElementById("blog-title");
 
@@ -39,17 +33,16 @@ const htmlEl = document.getElementById("blog-html");
 
 const breadcrumbEl = document.getElementById("blog-breadcrumb");
 
-// Related Blogs
-
 const relatedGrid = document.getElementById("related-blogs");
 
-// ===========================================
-// VALIDATE URL
-// ===========================================
 
-if (!slug) {
+//======================================================
+// VALIDATION
+//======================================================
 
-    console.error("Slug Not Found");
+if (!blogId) {
+
+    console.error("Blog ID Missing");
 
     if (titleEl) {
 
@@ -57,33 +50,33 @@ if (!slug) {
 
     }
 
-    throw new Error("Slug Missing");
+    throw new Error("Blog ID Missing");
 
 }
 
-// ===========================================
+
+//======================================================
 // HELPERS
-// ===========================================
+//======================================================
 
-function formatDate(dateString){
+function formatDate(date) {
 
-    if(!dateString) return "";
+    if (!date) return "";
 
-    const date = new Date(dateString);
+    return new Date(date).toLocaleDateString("en-GB", {
 
-    return date.toLocaleDateString("en-GB",{
+        day: "2-digit",
 
-        day:"2-digit",
+        month: "long",
 
-        month:"long",
-
-        year:"numeric"
+        year: "numeric"
 
     });
 
 }
 
-function getImage(blog){
+
+function getImage(blog) {
 
     return (
 
@@ -93,41 +86,73 @@ function getImage(blog){
 
         blog.cardImageDetailsDto?.thumbnail ||
 
+        blog.cardImageDetailsDto?.small ||
+
         "https://placehold.co/1200x700?text=No+Image"
 
     );
 
 }
 
-function escapeHTML(str){
 
-    if(!str) return "";
+function escapeHTML(str) {
+
+    if (!str) return "";
 
     return str
 
-        .replace(/&/g,"&amp;")
+        .replace(/&/g, "&amp;")
 
-        .replace(/</g,"&lt;")
+        .replace(/</g, "&lt;")
 
-        .replace(/>/g,"&gt;")
+        .replace(/>/g, "&gt;")
 
-        .replace(/"/g,"&quot;")
+        .replace(/"/g, "&quot;")
 
-        .replace(/'/g,"&#039;");
+        .replace(/'/g, "&#039;");
 
 }
 
-// ===========================================
-// SEO
-// ===========================================
 
-function updateSEO(blog){
+//======================================================
+// LOADING
+//======================================================
+
+function showLoading() {
+
+    if (titleEl) {
+
+        titleEl.innerHTML = "Loading Blog...";
+
+    }
+
+}
+
+
+function showError(message) {
+
+    console.error(message);
+
+    if (titleEl) {
+
+        titleEl.innerHTML = message;
+
+    }
+
+}
+
+
+//======================================================
+// SEO
+//======================================================
+
+function updateSEO(blog) {
 
     document.title = `${blog.blogTitle} | QKS Group`;
 
     let meta = document.querySelector('meta[name="description"]');
 
-    if(!meta){
+    if (!meta) {
 
         meta = document.createElement("meta");
 
@@ -141,91 +166,46 @@ function updateSEO(blog){
 
         blog.synopsis ||
 
-        "Latest Insights from QKS Group.";
+        "Latest insights from QKS Group.";
 
 }
 
-// ===========================================
-// LOADING
-// ===========================================
 
-function showLoading(){
-
-    if(titleEl){
-
-        titleEl.innerHTML = "Loading Blog...";
-
-    }
-
-}
-
-function hideLoading(){
-
-    // Reserved for future loader animation
-
-}
-
-// ===========================================
-// ERROR
-// ===========================================
-
-function showError(message){
-
-    console.error(message);
-
-    if(titleEl){
-
-        titleEl.innerHTML = message;
-
-    }
-
-}
-
-// ===========================================
-// START
-// ===========================================
-
-showLoading();
-// ===========================================
+//======================================================
 // LOAD BLOG
-// ===========================================
+//======================================================
 
 async function loadBlog() {
 
     try {
 
-        console.log("Fetching Blog...");
+        showLoading();
+
+        console.log("Fetching Blog ID :", blogId);
 
         const response = await fetch(
-`${API_BASE}/get-single-blog?id=${blogId}`
-);
+
+            `${API_BASE}/get-single-blog?id=${blogId}`
+
+        );
 
         if (!response.ok) {
 
-            throw new Error("API Error");
+            throw new Error("Unable to fetch blog");
 
         }
-const data = await response.json();
 
-console.log("FULL BLOG DATA");
-console.log(data);
+        const data = await response.json();
 
-console.log("BODY");
-console.log(data.body);
+        console.log("Single Blog API :", data);
 
-console.log("FIRST BLOG");
-console.log(JSON.stringify(data.body, null, 2));
-        // const data = await response.json();
+        if (!data.body) {
 
-        // console.log("Single Blog API:", data);
+            showError("Blog Not Found");
 
-        // if (!data.body) {
+            return;
 
-        //     showError("Blog Not Found");
-
-        //     return;
-
-        // }
+        }
 
         currentBlog = data.body;
 
@@ -233,12 +213,11 @@ console.log(JSON.stringify(data.body, null, 2));
 
         updateSEO(currentBlog);
 
-        hideLoading();
-
-        // Load Related Blogs
         loadRelatedBlogs(currentBlog.blogCategory);
 
-    } catch (error) {
+    }
+
+    catch (error) {
 
         console.error(error);
 
@@ -248,9 +227,10 @@ console.log(JSON.stringify(data.body, null, 2));
 
 }
 
-// ===========================================
+
+//======================================================
 // RENDER BLOG
-// ===========================================
+//======================================================
 
 function renderBlog(blog) {
 
@@ -258,23 +238,11 @@ function renderBlog(blog) {
 
     const formattedDate = formatDate(blog.postDate);
 
-    // ---------------------------------------
-
-    // Title
-
-    // ---------------------------------------
-
     if (titleEl) {
 
         titleEl.innerHTML = blog.blogTitle;
 
     }
-
-    // ---------------------------------------
-
-    // Date
-
-    // ---------------------------------------
 
     if (dateEl) {
 
@@ -282,39 +250,25 @@ function renderBlog(blog) {
 
     }
 
-    // ---------------------------------------
-
-    // Author
-
-    // ---------------------------------------
-
     if (authorEl) {
 
         authorEl.innerHTML =
 
-            blog.postAuthor || "QKS Group";
+            blog.postAuthor ||
+
+            "QKS Group";
 
     }
-
-    // ---------------------------------------
-
-    // Category
-
-    // ---------------------------------------
 
     if (categoryEl) {
 
         categoryEl.innerHTML =
 
-            blog.blogCategory || "Blog";
+            blog.blogCategory ||
+
+            "Blog";
 
     }
-
-    // ---------------------------------------
-
-    // Hero Image
-
-    // ---------------------------------------
 
     if (heroImageEl) {
 
@@ -324,49 +278,33 @@ function renderBlog(blog) {
 
     }
 
-    // ---------------------------------------
-
-    // Blog HTML
-
-    // ---------------------------------------
-
     if (htmlEl) {
 
         htmlEl.innerHTML =
 
-            blog.blogDescription || "";
+            blog.blogDescription ||
+
+            "";
 
     }
-
-    // ---------------------------------------
-
-    // Breadcrumb
-
-    // ---------------------------------------
 
     if (breadcrumbEl) {
 
         breadcrumbEl.innerHTML = `
 
-            <a href="/">Home</a>
+<a href="/">Home</a>
 
-            <span>/</span>
+<span> / </span>
 
-            <a href="/blogs">Blogs</a>
+<a href="/blogs">Blogs</a>
 
-            <span>/</span>
+<span> / </span>
 
-            <span>${escapeHTML(blog.blogTitle)}</span>
+<span>${escapeHTML(blog.blogTitle)}</span>
 
-        `;
+`;
 
     }
-
-    // ---------------------------------------
-
-    // Scroll Top
-
-    // ---------------------------------------
 
     window.scrollTo({
 
@@ -377,9 +315,9 @@ function renderBlog(blog) {
     });
 
 }
-// ===========================================
+//======================================================
 // LOAD RELATED BLOGS
-// ===========================================
+//======================================================
 
 async function loadRelatedBlogs(category) {
 
@@ -397,7 +335,7 @@ async function loadRelatedBlogs(category) {
 
         const response = await fetch(
 
-            `${API_BASE}/get-blogs?page=0&size=6`
+            `${API_BASE}/get-blogs?page=0&size=20`
 
         );
 
@@ -411,19 +349,19 @@ async function loadRelatedBlogs(category) {
 
         }
 
+        //------------------------------------------------
+        // Same Category Blogs
+        //------------------------------------------------
+
         let related = data.body.filter((blog) => {
 
-            // Skip Current Blog
-
-            if (blog.blogTitle === currentBlog.blogTitle) {
+            if (blog.id === currentBlog.id) {
 
                 return false;
 
             }
 
-            // Same Category
-
-            if (
+            return (
 
                 blog.blogCategory &&
 
@@ -431,37 +369,33 @@ async function loadRelatedBlogs(category) {
 
                 blog.blogCategory === currentBlog.blogCategory
 
-            ) {
-
-                return true;
-
-            }
-
-            return false;
+            );
 
         });
 
-        // If category has less than 3 blogs
+        //------------------------------------------------
+        // Fallback Latest Blogs
+        //------------------------------------------------
 
         if (related.length < 3) {
 
-            related = data.body.filter((blog) =>
+            related = data.body.filter((blog) => {
 
-                blog.blogTitle !== currentBlog.blogTitle
+                return blog.id !== currentBlog.id;
 
-            );
+            });
 
         }
 
-        related = related.slice(0, 3);
+        related = related.slice(0,3);
 
         renderRelatedBlogs(related);
 
     }
 
-    catch (error) {
+    catch(error){
 
-        console.error("Related Blogs Error :", error);
+        console.error("Related Blogs Error :",error);
 
         relatedGrid.innerHTML = "";
 
@@ -469,17 +403,19 @@ async function loadRelatedBlogs(category) {
 
 }
 
-// ===========================================
+
+
+//======================================================
 // RENDER RELATED BLOGS
-// ===========================================
+//======================================================
 
-function renderRelatedBlogs(blogs) {
+function renderRelatedBlogs(blogs){
 
-    if (!relatedGrid) return;
+    if(!relatedGrid) return;
 
-    relatedGrid.innerHTML = "";
+    let html = "";
 
-    blogs.forEach((blog) => {
+    blogs.forEach((blog)=>{
 
         const image = getImage(blog);
 
@@ -491,15 +427,7 @@ function renderRelatedBlogs(blogs) {
 
             "Click Read More to explore the complete article.";
 
-        const slug =
-
-            blog.blogUrl ?
-
-            blog.blogUrl.split("/").pop()
-
-            : "";
-
-        relatedGrid.innerHTML += `
+        html += `
 
 <div class="related-card">
 
@@ -535,7 +463,7 @@ function renderRelatedBlogs(blogs) {
 
                 ?
 
-                blog.blogTitle.substring(0,70) + "..."
+                blog.blogTitle.substring(0,70)+"..."
 
                 :
 
@@ -553,7 +481,7 @@ function renderRelatedBlogs(blogs) {
 
                 ?
 
-                synopsis.substring(0,120) + "..."
+                synopsis.substring(0,120)+"..."
 
                 :
 
@@ -563,7 +491,7 @@ function renderRelatedBlogs(blogs) {
 
         </p>
 
-        <a href="/blog-details?slug=${slug}">
+        <a href="/blog-details?id=${blog.id}">
 
             Read More →
 
@@ -577,10 +505,12 @@ function renderRelatedBlogs(blogs) {
 
     });
 
+    relatedGrid.innerHTML = html;
+
 }
-// ===========================================
+//======================================================
 // READING TIME
-// ===========================================
+//======================================================
 
 function calculateReadingTime() {
 
@@ -588,17 +518,27 @@ function calculateReadingTime() {
 
     const text = htmlEl.innerText || htmlEl.textContent || "";
 
-    const words = text.trim().split(/\s+/).length;
+    const words = text.trim().split(/\s+/).filter(Boolean).length;
 
     const minutes = Math.max(1, Math.ceil(words / 200));
 
-    console.log("Reading Time:", minutes + " min");
+    const readingTimeEl = document.getElementById("reading-time");
+
+    if (readingTimeEl) {
+
+        readingTimeEl.innerHTML = `${minutes} min read`;
+
+    }
+
+    console.log("Reading Time :", minutes + " min");
 
 }
 
-// ===========================================
+
+
+//======================================================
 // COPY LINK
-// ===========================================
+//======================================================
 
 function copyBlogLink() {
 
@@ -608,9 +548,11 @@ function copyBlogLink() {
 
 }
 
-// ===========================================
+
+
+//======================================================
 // SHARE
-// ===========================================
+//======================================================
 
 function shareOnLinkedIn() {
 
@@ -624,6 +566,8 @@ function shareOnLinkedIn() {
 
 }
 
+
+
 function shareOnTwitter() {
 
     window.open(
@@ -635,6 +579,8 @@ function shareOnTwitter() {
     );
 
 }
+
+
 
 function shareOnFacebook() {
 
@@ -648,37 +594,131 @@ function shareOnFacebook() {
 
 }
 
-// ===========================================
-// SCROLL TOP
-// ===========================================
 
-function scrollTopPage(){
+
+//======================================================
+// SCROLL TO TOP
+//======================================================
+
+function scrollTopPage() {
 
     window.scrollTo({
 
-        top:0,
+        top: 0,
 
-        behavior:"smooth"
+        behavior: "smooth"
 
     });
 
 }
 
-// ===========================================
-// EVENTS
-// ===========================================
 
-document.addEventListener("DOMContentLoaded",()=>{
 
-    console.log("Blog Details Ready");
+//======================================================
+// PREVIOUS / NEXT BLOG
+//======================================================
+
+async function loadPrevNextBlogs() {
+
+    try {
+
+        const response = await fetch(
+
+            `${API_BASE}/get-blogs?page=0&size=100`
+
+        );
+
+        const data = await response.json();
+
+        if (!data.body || !data.body.length) return;
+
+        const blogs = data.body;
+
+        const index = blogs.findIndex(
+
+            b => b.id == currentBlog.id
+
+        );
+
+        //------------------------------------------------
+
+        // Previous
+
+        //------------------------------------------------
+
+        const prevBtn = document.getElementById("prev-blog");
+
+        if (prevBtn && index > 0) {
+
+            prevBtn.href = `/blog-details?id=${blogs[index - 1].id}`;
+
+            prevBtn.style.display = "inline-flex";
+
+        }
+
+        //------------------------------------------------
+
+        // Next
+
+        //------------------------------------------------
+
+        const nextBtn = document.getElementById("next-blog");
+
+        if (nextBtn && index < blogs.length - 1) {
+
+            nextBtn.href = `/blog-details?id=${blogs[index + 1].id}`;
+
+            nextBtn.style.display = "inline-flex";
+
+        }
+
+    }
+
+    catch (error) {
+
+        console.error("Prev / Next Error :", error);
+
+    }
+
+}
+
+
+
+//======================================================
+// AFTER BLOG RENDER
+//======================================================
+
+const originalRenderBlog = renderBlog;
+
+renderBlog = function(blog) {
+
+    originalRenderBlog(blog);
+
+    calculateReadingTime();
+
+    loadPrevNextBlogs();
+
+};
+
+
+
+//======================================================
+// PAGE READY
+//======================================================
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    console.log("BLOG DETAILS READY");
 
     loadBlog();
 
 });
 
-// ===========================================
-// OPTIONAL GLOBAL FUNCTIONS
-// ===========================================
+
+
+//======================================================
+// GLOBAL FUNCTIONS
+//======================================================
 
 window.copyBlogLink = copyBlogLink;
 
@@ -689,17 +729,324 @@ window.shareOnTwitter = shareOnTwitter;
 window.shareOnFacebook = shareOnFacebook;
 
 window.scrollTopPage = scrollTopPage;
+//======================================================
+// CANONICAL URL
+//======================================================
 
-// ===========================================
-// AFTER BLOG LOAD
-// ===========================================
+function updateCanonical() {
 
-const originalRenderBlog = renderBlog;
+    let canonical = document.querySelector("link[rel='canonical']");
 
-renderBlog = function(blog){
+    if (!canonical) {
 
-    originalRenderBlog(blog);
+        canonical = document.createElement("link");
 
-    calculateReadingTime();
+        canonical.rel = "canonical";
+
+        document.head.appendChild(canonical);
+
+    }
+
+    canonical.href = window.location.href;
+
+}
+
+
+
+//======================================================
+// OPEN GRAPH META
+//======================================================
+
+function updateOpenGraph(blog) {
+
+    const image = getImage(blog);
+
+    const description =
+
+        blog.synopsis ||
+
+        "Latest insights from QKS Group.";
+
+    const metas = [
+
+        {
+
+            property: "og:title",
+
+            content: blog.blogTitle
+
+        },
+
+        {
+
+            property: "og:description",
+
+            content: description
+
+        },
+
+        {
+
+            property: "og:image",
+
+            content: image
+
+        },
+
+        {
+
+            property: "og:url",
+
+            content: window.location.href
+
+        },
+
+        {
+
+            property: "og:type",
+
+            content: "article"
+
+        }
+
+    ];
+
+    metas.forEach(item=>{
+
+        let tag = document.querySelector(
+
+            `meta[property="${item.property}"]`
+
+        );
+
+        if(!tag){
+
+            tag = document.createElement("meta");
+
+            tag.setAttribute("property",item.property);
+
+            document.head.appendChild(tag);
+
+        }
+
+        tag.content = item.content;
+
+    });
+
+}
+
+
+
+//======================================================
+// TWITTER META
+//======================================================
+
+function updateTwitter(blog){
+
+    const image = getImage(blog);
+
+    const metas = [
+
+        {
+
+            name:"twitter:card",
+
+            content:"summary_large_image"
+
+        },
+
+        {
+
+            name:"twitter:title",
+
+            content:blog.blogTitle
+
+        },
+
+        {
+
+            name:"twitter:description",
+
+            content:blog.synopsis ||
+
+            ""
+
+        },
+
+        {
+
+            name:"twitter:image",
+
+            content:image
+
+        }
+
+    ];
+
+    metas.forEach(item=>{
+
+        let tag = document.querySelector(
+
+            `meta[name="${item.name}"]`
+
+        );
+
+        if(!tag){
+
+            tag = document.createElement("meta");
+
+            tag.name=item.name;
+
+            document.head.appendChild(tag);
+
+        }
+
+        tag.content=item.content;
+
+    });
+
+}
+
+
+
+//======================================================
+// JSON-LD
+//======================================================
+
+function addStructuredData(blog){
+
+    const old=document.getElementById("blog-jsonld");
+
+    if(old){
+
+        old.remove();
+
+    }
+
+    const script=document.createElement("script");
+
+    script.type="application/ld+json";
+
+    script.id="blog-jsonld";
+
+    script.innerHTML=JSON.stringify({
+
+        "@context":"https://schema.org",
+
+        "@type":"BlogPosting",
+
+        headline:blog.blogTitle,
+
+        image:getImage(blog),
+
+        author:{
+
+            "@type":"Person",
+
+            name:blog.postAuthor ||
+
+            "QKS Group"
+
+        },
+
+        datePublished:new Date(
+
+            blog.postDate
+
+        ).toISOString(),
+
+        publisher:{
+
+            "@type":"Organization",
+
+            name:"QKS Group"
+
+        },
+
+        description:
+
+        blog.synopsis ||
+
+        ""
+
+    });
+
+    document.head.appendChild(script);
+
+}
+
+
+
+//======================================================
+// IMAGE OPTIMIZATION
+//======================================================
+
+function optimizeImages(){
+
+    document
+
+    .querySelectorAll("img")
+
+    .forEach(img=>{
+
+        img.loading="lazy";
+
+        img.decoding="async";
+
+    });
+
+}
+
+
+
+//======================================================
+// FADE ANIMATION
+//======================================================
+
+function animatePage(){
+
+    document.body.classList.add(
+
+        "blog-loaded"
+
+    );
+
+}
+
+
+
+//======================================================
+// AFTER BLOG RENDER
+//======================================================
+
+const previousRender = renderBlog;
+
+renderBlog=function(blog){
+
+    previousRender(blog);
+
+    updateCanonical();
+
+    updateOpenGraph(blog);
+
+    updateTwitter(blog);
+
+    addStructuredData(blog);
+
+    optimizeImages();
+
+    animatePage();
 
 };
+
+
+
+//======================================================
+// FINAL LOG
+//======================================================
+
+console.log(
+
+"BLOG DETAILS PRODUCTION V3 LOADED"
+
+);
