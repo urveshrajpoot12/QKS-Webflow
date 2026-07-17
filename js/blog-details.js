@@ -2,6 +2,12 @@ console.log("BLOG DETAILS PRODUCTION V2");
 
 const API_BASE = "https://backend.qksgroup.com";
 
+// Get slug from URL
+const params = new URLSearchParams(window.location.search);
+const slug = params.get("slug");
+
+console.log("Current Slug:", slug);
+
 // ===========================================
 // URL PARAMETERS
 // ===========================================

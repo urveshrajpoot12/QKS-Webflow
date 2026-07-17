@@ -151,6 +151,8 @@ function renderCards(blogs){
         ? blog.blogUrl.split("/").pop()
 
         : "";
+        console.log("blog.blogUrl =", blog.blogUrl);
+console.log("slug =", slug);
 
         const blogUrl =
 
