@@ -4,9 +4,10 @@ const API_BASE = "https://backend.qksgroup.com";
 
 // Get slug from URL
 const params = new URLSearchParams(window.location.search);
-const slug = params.get("slug");
 
-console.log("Current Slug:", slug);
+const blogId = params.get("id");
+
+console.log("Blog ID :", blogId);
 
 // ===========================================
 // URL PARAMETERS
@@ -196,26 +197,35 @@ async function loadBlog() {
         console.log("Fetching Blog...");
 
         const response = await fetch(
-            `${API_BASE}/get-single-blog?blogUrl=/blogs/${slug}`
-        );
+`${API_BASE}/get-single-blog?id=${blogId}`
+);
 
         if (!response.ok) {
 
             throw new Error("API Error");
 
         }
+const data = await response.json();
 
-        const data = await response.json();
+console.log("FULL BLOG DATA");
+console.log(data);
 
-        console.log("Single Blog API:", data);
+console.log("BODY");
+console.log(data.body);
 
-        if (!data.body) {
+console.log("FIRST BLOG");
+console.log(JSON.stringify(data.body, null, 2));
+        // const data = await response.json();
 
-            showError("Blog Not Found");
+        // console.log("Single Blog API:", data);
 
-            return;
+        // if (!data.body) {
 
-        }
+        //     showError("Blog Not Found");
+
+        //     return;
+
+        // }
 
         currentBlog = data.body;
 

@@ -144,20 +144,20 @@ function renderCards(blogs){
 
         "QKS Group";
 
-        const slug =
+//         const slug =
 
-        blog.blogUrl
+//         blog.blogUrl
 
-        ? blog.blogUrl.split("/").pop()
+//         ? blog.blogUrl.split("/").pop()
 
-        : "";
-        console.log("blog.blogUrl =", blog.blogUrl);
-console.log("slug =", slug);
+//         : "";
+//         console.log("blog.blogUrl =", blog.blogUrl);
+// console.log("slug =", slug);
 
-        const blogUrl =
+        // const blogUrl =
 
-        `/blog-details?slug=${slug}`;
-
+        // `/blog-details?slug=${slug}`;
+const blogUrl = `/blog-details?id=${blog.id}`;
         html += `
 
 <div class="blog-card">
