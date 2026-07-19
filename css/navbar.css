@@ -1,57 +1,17 @@
 .enterprise-dropdown{
-    position:relative;
+    position:static;
 }
 
-/* .enterprise-menu{
-    position:absolute;
-    top:100%;
-    left:50%;
-    transform:translateX(-50%) translateY(10px);
-
-    width:1200px;
-    background:#fff;
-
-    opacity:0;
-    visibility:hidden;
-    pointer-events:none;
-
-    transition:all .25s ease;
-
-    border-radius:24px;
-    box-shadow:0 25px 60px rgba(0,0,0,.12);
-
-    z-index:9999;
-} */
 .enterprise-menu{
-
     position:absolute;
-
-    top:calc(100% + 18px);
-
     left:50%;
+    top:86px;
 
-    transform:translateX(-35%);
+    width:min(1400px,92vw);
 
-    width:min(1380px,92vw);
+    transform:translateX(-50%);
 
-    min-height:460px;
-
-    background:#ffffff;
-
-    border-radius:24px;
-
-    box-shadow:0 25px 60px rgba(0,0,0,.10);
-
-    opacity:0;
-
-    visibility:hidden;
-
-    pointer-events:none;
-
-    transition:opacity .25s ease,
-               transform .25s ease;
-
-    z-index:999;
+    margin-top:18px;
 }
 .enterprise-dropdown:hover .enterprise-menu{
     opacity:1;
