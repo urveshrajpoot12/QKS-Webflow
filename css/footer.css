@@ -1,0 +1,172 @@
+/*======================================================
+                    FOOTER
+======================================================*/
+
+.footer{
+
+    background:#052850;
+
+    color:#fff;
+
+    width:100%;
+
+    overflow:hidden;
+
+}
+
+.footer-wrapper{
+
+    width:100%;
+
+    display:flex;
+
+    flex-direction:column;
+
+}
+
+.footer-top{
+
+    width:100%;
+
+    display:flex;
+
+    justify-content:center;
+
+    padding:40px 0 20px;
+
+}
+
+.footer-container{
+
+    width:80%;
+
+    max-width:1440px;
+
+    margin:auto;
+
+}
+
+.footer-grid{
+
+    display:grid;
+
+    grid-template-columns:75% 25%;
+
+    gap:40px;
+
+}
+
+.footer-left{
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:space-between;
+
+}
+
+.footer-right{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:28px;
+
+}
+/*======================================================
+                FOOTER LINKS
+======================================================*/
+
+.footer-links{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:32px;
+
+    flex-wrap:wrap;
+
+}
+
+.footer-link{
+
+    color:#fff;
+
+    text-decoration:none;
+
+    font-size:16px;
+
+    font-weight:500;
+
+    transition:.25s;
+
+}
+
+.footer-link:hover{
+
+    opacity:.75;
+
+}
+.footer-logo{
+
+    margin-top:42px;
+
+}
+
+.footer-logo img{
+
+    width:250px;
+
+    display:block;
+
+}
+.office{
+
+    display:flex;
+
+    gap:18px;
+
+    align-items:flex-start;
+
+}
+
+.office-icon{
+
+    width:30px;
+
+    flex-shrink:0;
+
+}
+
+.office-content{
+
+    display:flex;
+
+    flex-direction:column;
+
+}
+
+.office-title{
+
+    font-size:18px;
+
+    font-weight:700;
+
+    margin-bottom:6px;
+
+}
+
+.office-address{
+
+    font-size:15px;
+
+    line-height:1.8;
+
+    padding-bottom:8px;
+
+    border-bottom:1px solid rgba(255,255,255,.35);
+
+}
