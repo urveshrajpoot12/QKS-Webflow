@@ -12,7 +12,7 @@
 
     transform:translateX(-50%) translateY(15px);
 
-    width:min(1380px,92vw);
+    /* width:min(1380px,92vw); */
 
     background:#fff;
 
