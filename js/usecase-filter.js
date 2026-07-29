@@ -3,64 +3,44 @@ console.log("QKS Filter Loaded");
 const cards = document.querySelectorAll(".usecase-card");
 const objectiveBtns = document.querySelectorAll(".objective-buttons .filter-button");
 
-let activeObjective = "";
-
 objectiveBtns.forEach((btn) => {
-  btn.addEventListener("click", function (e) {
-    e.preventDefault();
 
-    // active class
-    objectiveBtns.forEach((b) => b.classList.remove("active"));
-    this.classList.add("active");
+    btn.addEventListener("click", function (e) {
 
-    activeObjective = this.innerText.trim();
+        e.preventDefault();
 
-    cards.forEach((card) => {
-      const objectives = (card.dataset.objectives || "").toLowerCase();
+        // Active Button
+        objectiveBtns.forEach(b => b.classList.remove("active"));
+        this.classList.add("active");
 
-      if (
-        objectives.includes(activeObjective.toLowerCase())
-      ) {
-        card.style.display = "";
-      } else {
-        card.style.display = "none";
-      }
-    });
-  });
-});
-console.log("Cards Found:", cards.length);
+        const selectedObjective = this.innerText.trim().toLowerCase();
 
-objectiveBtns.forEach((btn) => {
-  btn.addEventListener("click", function (e) {
+        console.log("Selected:", selectedObjective);
 
-    e.preventDefault();
+        cards.forEach(card => {
 
-    console.log("Clicked:", this.innerText.trim());
+            const objectives = (card.dataset.objectives || "").toLowerCase();
 
-    objectiveBtns.forEach((b) => b.classList.remove("active"));
-    this.classList.add("active");
+            const wrapper = card.closest(".filter-item");
 
-    const activeObjective = this.innerText.trim();
+            console.log(card.dataset.objectives);
 
-    cards.forEach((card, index) => {
+            if (objectives.includes(selectedObjective)) {
 
-      console.log(
-        "Card",
-        index + 1,
-        card.dataset.objectives
-      );
+                wrapper.style.display = "";
 
-      const objectives = (card.dataset.objectives || "").toLowerCase();
+                console.log("SHOW");
 
-      if (objectives.includes(activeObjective.toLowerCase())) {
-        console.log("MATCH");
-        card.style.display = "";
-      } else {
-        console.log("HIDE");
-        card.style.display = "none";
-      }
+            } else {
+
+                wrapper.style.display = "none";
+
+                console.log("HIDE");
+
+            }
+
+        });
 
     });
 
-  });
 });
