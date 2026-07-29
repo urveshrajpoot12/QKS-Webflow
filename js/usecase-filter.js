@@ -1,5 +1,15 @@
 document.addEventListener("DOMContentLoaded", () => {
 
+    console.log("========== NEW FILTER FILE ==========");
+
+    const cards = document.querySelectorAll("[data-card='true']");
+
+    console.log("Total Cards:", cards.length);
+
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+
     // Sabhi cards select karo
     const cards = document.querySelectorAll("[data-card='true']");
 
