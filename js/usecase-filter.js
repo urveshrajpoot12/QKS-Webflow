@@ -1,39 +1,54 @@
-document.addEventListener("DOMContentLoaded", () => {
+console.log("QKS Filter Started");
 
-    console.log("========== NEW FILTER FILE ==========");
+const cards = document.querySelectorAll(".usecase-card");
 
-    const cards = document.querySelectorAll("[data-card='true']");
+const objectiveChecks = document.querySelectorAll(
+  ".objective-buttons input[type='checkbox']"
+);
 
-    console.log("Total Cards:", cards.length);
+const businessChecks = document.querySelectorAll(
+  ".filter-business input[type='checkbox'], .business-buttons input[type='checkbox']"
+);
 
-});
+function applyFilter() {
 
-document.addEventListener("DOMContentLoaded", () => {
+  const selectedObjectives = [...objectiveChecks]
+    .filter(c => c.checked)
+    .map(c => c.value.trim());
 
-    // Sabhi cards select karo
-    const cards = document.querySelectorAll("[data-card='true']");
+  const selectedBusiness = [...businessChecks]
+    .filter(c => c.checked)
+    .map(c => c.value.trim());
 
-    console.log("Total Cards :", cards.length);
+  cards.forEach(card => {
 
-    cards.forEach((card, index) => {
+    const objectives = (card.dataset.objectives || "")
+      .split(",")
+      .map(x => x.trim());
 
-        const objectives = card.querySelector("[data-objectives='true']");
-        const business = card.querySelector("[data-business='true']");
+    const business = (card.dataset.business || "").trim();
 
-        console.log("---------------");
+    const objectiveMatch =
+      selectedObjectives.length === 0 ||
+      selectedObjectives.some(x => objectives.includes(x));
 
-        console.log("Card :", index + 1);
+    const businessMatch =
+      selectedBusiness.length === 0 ||
+      selectedBusiness.includes(business);
 
-        console.log(
-            "Objectives :",
-            objectives ? objectives.textContent.trim() : "Not Found"
-        );
+    card.style.display =
+      objectiveMatch && businessMatch ? "" : "none";
 
-        console.log(
-            "Business :",
-            business ? business.textContent.trim() : "Not Found"
-        );
+  });
 
-    });
+}
 
-});
+objectiveChecks.forEach(c =>
+  c.addEventListener("change", applyFilter)
+);
+
+businessChecks.forEach(c =>
+  c.addEventListener("change", applyFilter)
+);
+
+applyFilter();
