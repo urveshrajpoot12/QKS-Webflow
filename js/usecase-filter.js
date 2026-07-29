@@ -1,54 +1,30 @@
-console.log("QKS Filter Started");
+console.log("QKS Filter Loaded");
 
 const cards = document.querySelectorAll(".usecase-card");
+const objectiveBtns = document.querySelectorAll(".objective-buttons .filter-button");
 
-const objectiveChecks = document.querySelectorAll(
-  ".objective-buttons input[type='checkbox']"
-);
+let activeObjective = "";
 
-const businessChecks = document.querySelectorAll(
-  ".filter-business input[type='checkbox'], .business-buttons input[type='checkbox']"
-);
+objectiveBtns.forEach((btn) => {
+  btn.addEventListener("click", function (e) {
+    e.preventDefault();
 
-function applyFilter() {
+    // active class
+    objectiveBtns.forEach((b) => b.classList.remove("active"));
+    this.classList.add("active");
 
-  const selectedObjectives = [...objectiveChecks]
-    .filter(c => c.checked)
-    .map(c => c.value.trim());
+    activeObjective = this.innerText.trim();
 
-  const selectedBusiness = [...businessChecks]
-    .filter(c => c.checked)
-    .map(c => c.value.trim());
+    cards.forEach((card) => {
+      const objectives = (card.dataset.objectives || "").toLowerCase();
 
-  cards.forEach(card => {
-
-    const objectives = (card.dataset.objectives || "")
-      .split(",")
-      .map(x => x.trim());
-
-    const business = (card.dataset.business || "").trim();
-
-    const objectiveMatch =
-      selectedObjectives.length === 0 ||
-      selectedObjectives.some(x => objectives.includes(x));
-
-    const businessMatch =
-      selectedBusiness.length === 0 ||
-      selectedBusiness.includes(business);
-
-    card.style.display =
-      objectiveMatch && businessMatch ? "" : "none";
-
+      if (
+        objectives.includes(activeObjective.toLowerCase())
+      ) {
+        card.style.display = "";
+      } else {
+        card.style.display = "none";
+      }
+    });
   });
-
-}
-
-objectiveChecks.forEach(c =>
-  c.addEventListener("change", applyFilter)
-);
-
-businessChecks.forEach(c =>
-  c.addEventListener("change", applyFilter)
-);
-
-applyFilter();
+});
