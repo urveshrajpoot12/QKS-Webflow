@@ -1,45 +1,42 @@
 console.log("QKS Filter Loaded");
 
-const cards = document.querySelectorAll(".usecase-card");
-const objectiveBtns = document.querySelectorAll(".objective-buttons .filter-button");
+document.addEventListener("click", function (e) {
 
-objectiveBtns.forEach((btn) => {
+    const btn = e.target.closest(".objective-buttons .filter-button");
 
-    btn.addEventListener("click", function (e) {
+    if (!btn) return;
 
-        e.preventDefault();
+    e.preventDefault();
 
-        // Active Button
-        objectiveBtns.forEach(b => b.classList.remove("active"));
-        this.classList.add("active");
+    console.log("Clicked:", btn.innerText);
 
-        const selectedObjective = this.innerText.trim().toLowerCase();
+    const buttons = document.querySelectorAll(".objective-buttons .filter-button");
 
-        console.log("Selected:", selectedObjective);
+    buttons.forEach(b => b.classList.remove("active"));
 
-        cards.forEach(card => {
+    btn.classList.add("active");
 
-            const objectives = (card.dataset.objectives || "").toLowerCase();
+    const selected = btn.innerText.trim().toLowerCase();
 
-            const wrapper = card.closest(".filter-item");
+    document.querySelectorAll(".usecase-card").forEach(card => {
 
-            console.log(card.dataset.objectives);
+        const wrapper = card.closest(".filter-item");
 
-            if (objectives.includes(selectedObjective)) {
+        const objectives = (card.dataset.objectives || "").toLowerCase();
 
-                wrapper.style.display = "";
+        if (objectives.includes(selected)) {
 
-                console.log("SHOW");
+            wrapper.style.display = "";
 
-            } else {
+            console.log("SHOW", objectives);
 
-                wrapper.style.display = "none";
+        } else {
 
-                console.log("HIDE");
+            wrapper.style.display = "none";
 
-            }
+            console.log("HIDE", objectives);
 
-        });
+        }
 
     });
 
