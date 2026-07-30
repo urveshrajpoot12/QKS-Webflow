@@ -66,29 +66,35 @@ objectiveBtns.forEach(btn => {
 
 // Business Function Checkboxes
 
-businessCheckboxes.forEach(cb => {
+businessCheckboxes.forEach(cb=>{
 
-    cb.addEventListener("change", function () {
+    cb.addEventListener("change",function(){
 
-        const business = this.nextElementSibling.textContent.trim();
+        const business =
+            this.parentElement
+            .querySelector(".filter-label")
+            .textContent
+            .trim();
 
-        if (this.checked) {
+        if(this.checked){
 
-            if (!selectedBusinesses.includes(business)) {
+            if(!selectedBusinesses.includes(business))
                 selectedBusinesses.push(business);
-            }
 
-        } else {
+        }else{
 
             selectedBusinesses =
-                selectedBusinesses.filter(item => item !== business);
+                selectedBusinesses.filter(
+                    item=>item!==business
+                );
 
         }
-
-        console.log("Selected Businesses:", selectedBusinesses);
 
         applyFilters();
 
     });
 
 });
+
+
+applyFilters();
