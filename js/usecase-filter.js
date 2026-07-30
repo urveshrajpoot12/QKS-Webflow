@@ -1,43 +1,100 @@
 console.log("QKS Filter Loaded");
 
-document.addEventListener("click", function (e) {
+const cards = document.querySelectorAll(".usecase-card");
+const objectiveBtns = document.querySelectorAll(".objective-buttons .filter-button");
+const businessCheckboxes = document.querySelectorAll(".business-functions .w-checkbox-input");
 
-    const btn = e.target.closest(".objective-buttons .filter-button");
+let activeObjective = "";
+let selectedBusinesses = [];
 
-    if (!btn) return;
+function applyFilters() {
 
-    e.preventDefault();
-
-    console.log("Clicked:", btn.innerText);
-
-    const buttons = document.querySelectorAll(".objective-buttons .filter-button");
-
-    buttons.forEach(b => b.classList.remove("active"));
-
-    btn.classList.add("active");
-
-    const selected = btn.innerText.trim().toLowerCase();
-
-    document.querySelectorAll(".usecase-card").forEach(card => {
+    cards.forEach(card => {
 
         const wrapper = card.closest(".filter-item");
 
-        const objectives = (card.dataset.objectives || "").toLowerCase();
+        const cardObjective = (card.dataset.objectives || "").toLowerCase();
 
-        if (objectives.includes(selected)) {
+        const cardBusiness = (card.dataset.business || "").trim();
 
-            wrapper.style.display = "";
+        const objectiveMatch =
+            !activeObjective ||
+            cardObjective.includes(activeObjective.toLowerCase());
 
-            console.log("SHOW", objectives);
+        const businessMatch =
+            selectedBusinesses.length === 0 ||
+            selectedBusinesses.includes(cardBusiness);
 
-        } else {
+        wrapper.style.display =
+            objectiveMatch && businessMatch ? "" : "none";
 
-            wrapper.style.display = "none";
+    });
 
-            console.log("HIDE", objectives);
+}
+
+
+// Objective Buttons
+
+objectiveBtns.forEach(btn => {
+
+    btn.addEventListener("click", function(e){
+
+        e.preventDefault();
+
+        if(this.classList.contains("active")){
+
+            this.classList.remove("active");
+
+            activeObjective="";
+
+        }else{
+
+            objectiveBtns.forEach(b=>b.classList.remove("active"));
+
+            this.classList.add("active");
+
+            activeObjective=this.innerText.trim();
 
         }
+
+        applyFilters();
 
     });
 
 });
+
+
+// Business Function Checkboxes
+
+businessCheckboxes.forEach(cb=>{
+
+    cb.addEventListener("change",function(){
+
+        const business =
+            this.parentElement
+            .querySelector(".filter-label")
+            .textContent
+            .trim();
+
+        if(this.checked){
+
+            if(!selectedBusinesses.includes(business))
+                selectedBusinesses.push(business);
+
+        }else{
+
+            selectedBusinesses =
+                selectedBusinesses.filter(
+                    item=>item!==business
+                );
+
+        }
+
+        applyFilters();
+
+    });
+
+});
+
+
+applyFilters();
