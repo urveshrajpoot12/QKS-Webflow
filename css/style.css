@@ -2,62 +2,18 @@
    USECASE FILTER
 ========================================== */
 
-.w-dyn-items{
+.cards-wrapper-usecase .w-dyn-items{
     display:grid;
     grid-template-columns:repeat(2,minmax(0,1fr));
     gap:24px;
-    align-items:stretch;
 }
 
-.filter-item{
-    display:flex;
+.cards-wrapper-usecase .filter-item{
+    display:block;
 }
 
-.usecase-card{
+.cards-wrapper-usecase .usecase-card{
+    height:100%;
     display:flex;
     flex-direction:column;
-    height:100%;
-}
-
-.card-button{
-    margin-top:auto;
-}
-
-/* Animation */
-
-.filter-item{
-    transition:.35s ease;
-}
-
-.filter-item.hide{
-    opacity:0;
-    transform:translateY(20px);
-    pointer-events:none;
-}
-
-.filter-item.show{
-    opacity:1;
-    transform:translateY(0);
-}
-
-/* Objective Button */
-
-.filter-button{
-    transition:.25s ease;
-}
-
-.filter-button.active{
-    background:#0C63E7;
-    border-color:#0C63E7;
-}
-
-.filter-button.active .text-btn{
-    color:#fff;
-}
-
-/* Checkbox */
-
-.w-checkbox-input--inputType-custom.w--redirected-checked{
-    background:#0C63E7;
-    border-color:#0C63E7;
 }
