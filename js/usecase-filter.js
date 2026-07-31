@@ -113,7 +113,8 @@ document.addEventListener("DOMContentLoaded", () => {
     ...document.querySelectorAll(".business-functions .w-checkbox-input")
   ];
 
-  let activeObjective = "";
+//   let activeObjective = "";
+  let activeObjectives = [];
   let selectedBusinesses = [];
 
   // -----------------------------
@@ -134,10 +135,16 @@ document.addEventListener("DOMContentLoaded", () => {
         .toLowerCase()
         .trim();
 
-      const objectiveMatch =
-        activeObjective === "" ||
-        objectives.includes(activeObjective.toLowerCase());
+    //   const objectiveMatch =
+    //     activeObjective === "" ||
+    //     objectives.includes(activeObjective.toLowerCase());
+        
+const objectiveMatch =
+activeObjectives.length===0 ||
 
+activeObjectives.some(item=>
+objectives.includes(item.toLowerCase())
+);
       const businessMatch =
         selectedBusinesses.length === 0 ||
         selectedBusinesses.includes(business);
@@ -154,39 +161,69 @@ document.addEventListener("DOMContentLoaded", () => {
   // -----------------------------
   // OBJECTIVE BUTTONS
   // -----------------------------
-  objectiveButtons.forEach(btn => {
+//   objectiveButtons.forEach(btn => {
 
-    btn.addEventListener("click", e => {
+//     btn.addEventListener("click", e => {
 
-      e.preventDefault();
+//       e.preventDefault();
 
-      const text =
-        btn.querySelector(".text-btn")?.textContent.trim()
-        || btn.textContent.trim();
+//       const text =
+//         btn.querySelector(".text-btn")?.textContent.trim()
+//         || btn.textContent.trim();
 
-      if (btn.classList.contains("active")) {
+//       if (btn.classList.contains("active")) {
 
-        btn.classList.remove("active");
+//         btn.classList.remove("active");
 
-        activeObjective = "";
+//         activeObjective = "";
 
-      } else {
+//       } else {
 
-        objectiveButtons.forEach(b =>
-          b.classList.remove("active")
-        );
+//         objectiveButtons.forEach(b =>
+//           b.classList.remove("active")
+//         );
 
-        btn.classList.add("active");
+//         btn.classList.add("active");
 
-        activeObjective = text;
+//         activeObjective = text;
 
-      }
+//       }
 
-      filterCards();
+//       filterCards();
 
-    });
+//     });
+
+//   });
+
+objectiveButtons.forEach(btn => {
+
+  btn.addEventListener("click", e => {
+
+    e.preventDefault();
+
+    const value =
+      btn.querySelector(".text-btn")?.textContent.trim();
+
+    if (btn.classList.contains("active")) {
+
+      btn.classList.remove("active");
+
+      activeObjectives =
+        activeObjectives.filter(i => i !== value);
+
+    } else {
+
+      btn.classList.add("active");
+
+      activeObjectives.push(value);
+
+    }
+
+    filterCards();
 
   });
+
+});
 
   // -----------------------------
   // BUSINESS CHECKBOX
