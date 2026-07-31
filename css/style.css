@@ -8,9 +8,6 @@
     gap:24px;
 }
 
-.cards-wrapper-usecase .filter-item{
-    display:block;
-}
 
 .cards-wrapper-usecase .usecase-card{
     height:100%;
@@ -95,9 +92,3 @@ margin-top:auto;
     overflow:hidden !important;
 }
 
-.filter-objectives-list{
-    width:100% !important;
-    display:grid !important;
-    grid-template-columns:repeat(2,minmax(0,1fr)) !important;
-    gap:24px !important;
-}
