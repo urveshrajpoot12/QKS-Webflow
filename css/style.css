@@ -65,7 +65,7 @@ align-items:stretch;
 }
 
 .usecase-card h3{
-    font-size:22px;
+    font-size:22px!important;
     line-height:1.25;
     margin-bottom:16px;
     font-weight:700;
