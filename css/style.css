@@ -65,11 +65,10 @@ align-items:stretch;
 }
 
 .usecase-card h3{
-
-font-size:38px;
-
-margin-bottom:18px;
-
+    font-size:22px;
+    line-height:1.25;
+    margin-bottom:16px;
+    font-weight:700;
 }
 
 .card-meta{
